@@ -1,9 +1,10 @@
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:uisamples/neuthumbprint/ui/widgets/background/background.dart';
 import 'package:uisamples/neuthumbprint/ui/widgets/thumb/thumb.dart';
+
+import '../../widgets/led/led.dart';
 
 class ThumbHome extends StatefulWidget {
   @override
@@ -17,15 +18,18 @@ class _ThumbHomeState extends State<ThumbHome> {
 
   final Offset offset = Offset(15, 15);
 
-  final Color innerShadow = Color(0xff8494AD);
+  final Color innerShadow = Color(0xff919BAC);
+  final Color innerShadowPressed = Color(0xff798194);
 
   final Color outerShadow = Color(0xff2D2F59).withOpacity(.4);
 
-  final Color innerLight = Colors.white;
+  final Color innerLight = Color(0xffeaf0f5);
+  // final Color innerLightPressed = Color(0xffffffff);
 
-  final Color outerLight = Colors.white60;
+  final Color outerLight = Colors.white70;
 
   final Color baseColor = Color(0xffC1CBD3);
+  double opacity = 0.0;
 
   List<Color> gradient = [];
 
@@ -46,6 +50,7 @@ class _ThumbHomeState extends State<ThumbHome> {
         alignment: Alignment.center,
         children: [
           Background(),
+          
           ThumbContainer(
             baseColor: baseColor,
             blur: blur,
@@ -58,31 +63,40 @@ class _ThumbHomeState extends State<ThumbHome> {
             outerLight: outerLight,
           ),
           Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-              child: Container(
-                color: Colors.black.withOpacity(0),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
             child: GestureDetector(
-              child: Container(
-                width: 200,
-                height: 100,
-                color: Colors.white38,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                child: Container(
+                  color: Colors.black.withOpacity(0),
+                ),
               ),
               onTapDown: (details) {
                 setState(() {
                   gradient = gradient.reversed.toList();
+                  gradient[0] = innerShadowPressed;
+                  opacity = .3;
                 });
               },
               onTapUp: (details) {
                 setState(() {
+                  gradient[0] = innerShadow;
                   gradient = gradient.reversed.toList();
+                  opacity = 0.0;
                 });
               },
+            ),
+          ),
+          IgnorePointer(
+            child: AnimatedOpacity(
+              curve: Curves.easeIn,
+              duration: Duration(milliseconds: 100),
+              opacity: opacity,
+              child: Image.asset(
+                'assets/fingerprint.png',
+                
+                width: 80,
+                height: 80,
+              ),
             ),
           )
         ],
